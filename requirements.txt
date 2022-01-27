@@ -1,0 +1,20 @@
+# Maths
+numpy
+pandas
+scikit-learn
+
+# Data feeds
+python-binance
+
+# Backtesting
+backtesting
+alpha_vantage
+
+# Data bases
+motor
+
+# Others
+rich
+pytest
+uvloop
+pre-commit

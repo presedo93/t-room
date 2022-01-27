@@ -1,0 +1,11 @@
+# Project related folders to ignore
+.vscode/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+.mypy_cache/
+*.py[cod]
+*$py.class
+
+# Environments
+venv/
