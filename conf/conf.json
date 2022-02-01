@@ -1,0 +1,37 @@
+{
+    "market": "krypto",
+    "ticker": {
+        "symbol": "ALL",
+        "constraints": "lambda v: float(v['price']) < 200 and 'USDT' in v['symbol']"
+    },
+    "strategy": "goldencross",
+    "steps": 4,
+    "routine": [
+        {
+            "task": "Fetch",
+            "interval": ["5m", "15m", "1h", "1d"],
+            "period": [30, 50, 100, 150]
+        },
+        {
+            "task": "Optimize",
+            "limits": {
+                "commission": 0.00075,
+                "cash": 10000
+            },
+            "params": {
+                "fast_n": "range(20, 80, 5)",
+                "slow_n": "range(120, 180, 10)",
+                "constraint": "lambda p: p.fast_n < p.slow_n",
+                "maximize": "Equity Final [$]"
+            }
+        },
+        {
+            "task": "Backtest",
+            "limits": {
+                "commission": 0.00075,
+                "cash": 10000
+            },
+            "params": {}
+        }
+    ]
+}

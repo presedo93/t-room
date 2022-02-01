@@ -1,4 +1,8 @@
+import os
+import json
 import argparse
+
+from typing import Dict
 
 
 def str2bool(v: str) -> bool:
@@ -10,3 +14,10 @@ def str2bool(v: str) -> bool:
         return False
     else:
         raise argparse.ArgumentTypeError("Boolean value expected.")
+
+
+def open_conf(conf_path: str) -> Dict:
+    with open(os.path.join(os.getcwd(), conf_path), "r") as f:
+        conf = json.load(f)
+
+    return conf

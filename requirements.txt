@@ -5,16 +5,19 @@ scikit-learn
 
 # Data feeds
 python-binance
+alpha_vantage
 
 # Backtesting
 backtesting
-alpha_vantage
 
 # Data bases
 motor
 
-# Others
+# Dashboard
 rich
+textual
+
+# Others
 pytest
 uvloop
 pre-commit

@@ -3,6 +3,7 @@ import argparse
 
 from tools.utils import str2bool
 
+
 def main(args: argparse.Namespace):
     return 0
 
