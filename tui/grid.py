@@ -2,14 +2,11 @@ from textual.views import GridView
 
 from textual.widgets import Placeholder
 
-# from tui.widgets.params import Params
+from tui.widgets.params import Params
 from tui.widgets.status import Status
-
-# from tui.widgets.selector import Selector
-
+from tui.widgets.configs import Configs
 from tui.widgets.tickers import Tickers
-
-from tui.messages import NewCommand
+from tui.widgets.selector import Selector
 
 
 class DashGrid(GridView):
@@ -28,11 +25,11 @@ class DashGrid(GridView):
         self.grid.add_row(fraction=1, name="bottom")
 
         self.grid.add_areas(
-            area1="left-start|leftcent-end,top",
+            configs="left-start|leftcent-end,top",
             central="rightcent-start|right-end,top-start|midbot-end",
             status="left-start|right-end,bottom",
-            area5="left,middle",
-            area6="leftcent,middle",
+            market="left,middle",
+            strategies="leftcent,middle",
             area7="left,midtop",
             area8="leftcent, midtop",
             tickers="left-start|leftcent-end,midbot",
@@ -40,17 +37,16 @@ class DashGrid(GridView):
 
         self.tickers = Tickers()
         self.status = Status()
+        self.configs = Configs()
+        self.params = Params()
 
         self.grid.place(
-            area1=Placeholder(name="area1"),
-            central=Placeholder(name="central"),
+            configs=self.configs,
+            central=self.params,
             status=self.status,
             tickers=self.tickers,
-            area5=Placeholder(name="area5"),
-            area6=Placeholder(name="area6"),
+            market=Selector("markets", ["kryptos", "stocks", "futures"]),
+            strategies=Selector("strategies", ["goldencross", "macd+rsi", "bollinger"]),
             area7=Placeholder(name="area7"),
             area8=Placeholder(name="area8"),
         )
-
-    async def handle_grid_command(self, message: NewCommand) -> None:
-        print("ttthereee")

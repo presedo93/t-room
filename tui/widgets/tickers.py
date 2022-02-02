@@ -17,17 +17,17 @@ class Tickers(Widget):
         self.tickers = ["BTCUSD", "ETHUSD", "ADABTC", "SHIBUSDT"] * 10
         super().__init__(name=None)
 
-    async def on_focus(self, event: events.Focus) -> None:
+    async def on_focus(self) -> None:
         self.has_focus = True
 
-    async def on_blur(self, event: events.Blur) -> None:
+    async def on_blur(self) -> None:
         self.has_focus = False
 
-    async def on_enter(self, event: events.Enter) -> None:
+    async def on_enter(self) -> None:
         self.mouse_over = True
         self.color = "green"
 
-    async def on_leave(self, event: events.Leave) -> None:
+    async def on_leave(self) -> None:
         self.mouse_over = False
         self.color = "blue"
 

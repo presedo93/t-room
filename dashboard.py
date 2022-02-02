@@ -1,3 +1,5 @@
+import asyncio
+
 from textual.app import App
 from textual.reactive import Reactive
 
@@ -5,9 +7,7 @@ from tui.grid import DashGrid
 from tui.widgets.header import Header
 from tui.widgets.command import Command
 
-# from tui.widgets.runner import Runner
-
-from tui.messages import NewCommand, GridCommand
+from tui.messages import InputCommand
 
 
 class Dashboard(App):
@@ -26,9 +26,9 @@ class Dashboard(App):
         """Called when user hits 'b' key."""
         self.show_runner = not self.show_runner
 
-    async def handle_new_command(self, message: NewCommand) -> None:
-        await self.grid.post_message(GridCommand(self, "here", "meeee"))
-        # self.grid.params.update_params(message)
+    async def handle_input_command(self, msg: InputCommand) -> None:
+        if msg.action == "config":
+            await self.grid.configs.post_message(InputCommand(self, cmd=msg.cmd, val=msg.val))
 
     async def on_mount(self) -> None:
         """Build layout here."""
@@ -42,6 +42,5 @@ class Dashboard(App):
         # self.runner = Runner()
         # await self.view.dock(self.runner, edge="left", z=1)
         # self.runner.visible = False
-
 
 Dashboard.run()

@@ -2,9 +2,8 @@ from rich import box
 from rich.align import Align
 from rich.panel import Panel
 from rich.console import RenderableType
-from rich.progress import Progress, BarColumn, TimeElapsedColumn
+from rich.progress import Progress, BarColumn, TimeRemainingColumn
 
-from textual import events
 from textual.widget import Widget
 from textual.reactive import Reactive
 
@@ -18,34 +17,32 @@ class Status(Widget):
             "[progress.description]{task.description}",
             BarColumn(bar_width=160),
             "[progress.percentage]{task.percentage:>3.0f}%",
-            TimeElapsedColumn(),
+            TimeRemainingColumn(),
         )
     )
-
-    i = 0
 
     async def on_mount(self) -> None:
         self.backtest = self.bar.add_task("backtest", total=100)
         self.optimize = self.bar.add_task("optimize", total=100)
+        self.forward = self.bar.add_task("forward", total=100)
+        self.set_interval(0.1, self.refresh)
 
-    async def on_focus(self, event: events.Focus) -> None:
+    async def on_focus(self) -> None:
         self.has_focus = True
 
-    async def on_blur(self, event: events.Blur) -> None:
+    async def on_blur(self) -> None:
         self.has_focus = False
 
-    async def on_enter(self, event: events.Enter) -> None:
+    async def on_enter(self) -> None:
         self.mouse_over = True
         self.color = "green"
 
-    async def on_leave(self, event: events.Leave) -> None:
+    async def on_leave(self) -> None:
         self.mouse_over = False
         self.color = "blue"
 
-    async def on_key(self, event: events.Keys) -> None:
-        self.i += 1
-        self.bar.update(self.backtest, advance=self.i)
-        self.refresh()
+    # async def handle_grid_command(self, message: NewCommand) -> None:
+        # self.bar.update(self.backtest, advance=2)
 
     def render(self) -> RenderableType:
         return Panel(
