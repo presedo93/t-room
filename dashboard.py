@@ -25,17 +25,12 @@ class Dashboard(App):
 
     async def handle_input_command(self, msg: InputCommand) -> None:
         if msg.action == "config":
-            await self.grid.configs.post_message(InputCommand(self, cmd=msg.cmd, val=msg.val))
+            await self.grid.configs.post_message(InputCommand(self, cmd=msg.cmd))
 
     async def on_mount(self) -> None:
         self.grid = DashGrid()
         await self.view.dock(Header(), edge="top", size=3)
         await self.view.dock(Command(), edge="bottom", size=3)
         await self.view.dock(self.grid, edge="top")
-
-        # Runner
-        # self.runner = Runner()
-        # await self.view.dock(self.runner, edge="left", z=1)
-        # self.runner.visible = False
 
 Dashboard.run()

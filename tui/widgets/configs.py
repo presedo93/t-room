@@ -58,10 +58,25 @@ class Configs(Widget):
         self.color = "blue"
 
     async def handle_input_command(self, msg: InputCommand) -> None:
-        if msg.cmd.lower() == "workers":
-            self.workers = int(msg.val)
-        elif msg.cmd.lower() == "store":
-            self.store = str2bool(msg.val)
+        match msg.cmd:
+            case ["workers", val]:
+                self.workers = int(val)
+            case ["store", val]:
+                self.store = str2bool(val)
+            case ["cash", val]:
+                self.cash = float(val)
+            case ["commission", val]:
+                self.commission = float(val)
+            case ["price_limit", val]:
+                self.price_limit = float(val)
+            case ["str_ticker", val]:
+                self.str_ticker = str(val)
+            case ["interval", *val]:
+                self.interval = val
+            case ["period", *val]:
+                print(val)
+                self.period = val
+        self.refresh()
 
     def render(self) -> RenderableType:
         table1 = Table(

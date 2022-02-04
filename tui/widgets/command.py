@@ -32,15 +32,11 @@ class Command(Widget):
         elif event.key == Keys.Enter:
             t_split = self.text.split()
             t_len = len(t_split)
-            if t_len == 1:
-                action, cmd, val = t_split[0], None, None
-            elif t_len == 2:
-                action, cmd, val = t_split[0], t_split[1], None
-            elif t_len == 3:
-                action, cmd, val = t_split[0], t_split[1], t_split[2]
+            if 0 < t_len < 2:
+                action, cmd = t_split[0], []
             else:
-                action, cmd, val = None, None, None
-            await self.emit(InputCommand(self, action=action, cmd=cmd, val=val))
+                action, cmd = t_split[0], t_split[1:]
+            await self.emit(InputCommand(self, action=action, cmd=cmd))
         elif event.key == Keys.ControlC:
             pass
         else:
