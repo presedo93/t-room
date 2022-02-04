@@ -33,4 +33,5 @@ class Dashboard(App):
         await self.view.dock(Command(), edge="bottom", size=3)
         await self.view.dock(self.grid, edge="top")
 
+
 Dashboard.run()

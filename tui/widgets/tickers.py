@@ -55,7 +55,11 @@ class Tickers(Widget):
                 r3 = self.tickers[i + 2] if i + 2 < t_len else ""
                 rend.add_row(r1, r2, r3)
         else:
-            rend = Align.center("No tickers fetched yet", vertical="middle", style="green" if self.mouse_over else "blue")
+            rend = Align.center(
+                "No tickers fetched yet",
+                vertical="middle",
+                style="green" if self.mouse_over else "blue",
+            )
 
         return Panel(
             rend,

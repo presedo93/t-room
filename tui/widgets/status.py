@@ -42,7 +42,7 @@ class Status(Widget):
         self.color = "blue"
 
     # async def handle_grid_command(self, message: NewCommand) -> None:
-        # self.bar.update(self.backtest, advance=2)
+    # self.bar.update(self.backtest, advance=2)
 
     def render(self) -> RenderableType:
         return Panel(

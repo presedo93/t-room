@@ -1,4 +1,4 @@
-import uvloop
+# import uvloop
 import argparse
 
 from tools.utils import str2bool

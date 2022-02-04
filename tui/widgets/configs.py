@@ -94,8 +94,15 @@ class Configs(Widget):
         table1.add_column(justify="center", style="white")
 
         table1.add_row("Workers:", f"{self.workers}", "Store in DB:", f"{self.store}")
-        table1.add_row("Cash:", f"{self.cash}", "Commission:", f"{self.commission*100}%")
-        table1.add_row("Max. Price:", f"{self.price_limit}", "Name in ticker:", f"{self.str_ticker}")
+        table1.add_row(
+            "Cash:", f"{self.cash}", "Commission:", f"{self.commission*100}%"
+        )
+        table1.add_row(
+            "Max. Price:",
+            f"{self.price_limit}",
+            "Name in ticker:",
+            f"{self.str_ticker}",
+        )
 
         table2 = Table(
             box=None,

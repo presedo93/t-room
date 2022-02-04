@@ -34,7 +34,10 @@ Welcome to t-room, the backtesting tui!
           simulations?
         """
         return Panel(
-            Align.center(Text(text, "b green" if self.mouse_over else "b blue"), vertical="middle"),
+            Align.center(
+                Text(text, "b green" if self.mouse_over else "b blue"),
+                vertical="middle",
+            ),
             border_style="green" if self.mouse_over else "blue",
             box=box.HEAVY if self.has_focus else box.ROUNDED,
             title="parameters",

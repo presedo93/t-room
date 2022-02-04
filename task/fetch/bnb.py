@@ -45,7 +45,12 @@ def binance_data(
 
 if __name__ == "__main__":
     import os
-    logging.basicConfig(filename='binance.log', format='%(levelname)s - %(message)s', level=logging.INFO)
 
-    client = Client(api_key=os.getenv("BINANCE_API"), api_secret=os.getenv("BINANCE_SECRET"))
+    logging.basicConfig(
+        filename="binance.log", format="%(levelname)s - %(message)s", level=logging.INFO
+    )
+
+    client = Client(
+        api_key=os.getenv("BINANCE_API"), api_secret=os.getenv("BINANCE_SECRET")
+    )
     binance_data(client, "BTCUSDT", "1d", 20, save=True)

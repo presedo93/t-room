@@ -37,7 +37,13 @@ class Params(Widget):
         if self.params is not None:
             rend = self.create_table(self.params)
         else:
-            rend = Align.center(Text(f"No {self.field} params", style="green" if self.mouse_over else "blue"), vertical="middle")
+            rend = Align.center(
+                Text(
+                    f"No {self.field} params",
+                    style="green" if self.mouse_over else "blue",
+                ),
+                vertical="middle",
+            )
 
         return Panel(
             rend,
