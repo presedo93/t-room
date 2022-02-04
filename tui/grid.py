@@ -1,7 +1,7 @@
 from textual.views import GridView
 
-from textual.widgets import Placeholder
-
+from tools.utils import open_conf
+from tui.widgets.info import Info
 from tui.widgets.params import Params
 from tui.widgets.status import Status
 from tui.widgets.configs import Configs
@@ -30,23 +30,27 @@ class DashGrid(GridView):
             status="left-start|right-end,bottom",
             market="left,middle",
             strategies="leftcent,middle",
-            area7="left,midtop",
-            area8="leftcent, midtop",
+            optim="left,midtop",
+            forward="leftcent, midtop",
             tickers="left-start|leftcent-end,midbot",
         )
 
+        conf = open_conf("conf/conf.json")
+
         self.tickers = Tickers()
         self.status = Status()
-        self.configs = Configs()
-        self.params = Params()
+        self.configs = Configs(conf)
+        self.info = Info()
+        self.optim = Params("optimize", conf["optimize"])
+        self.forward = Params("forward")
 
         self.grid.place(
             configs=self.configs,
-            central=self.params,
+            central=self.info,
             status=self.status,
             tickers=self.tickers,
-            market=Selector("markets", ["kryptos", "stocks", "futures"]),
+            market=Selector("markets", conf["brokers"]),
             strategies=Selector("strategies", ["goldencross", "macd+rsi", "bollinger"]),
-            area7=Placeholder(name="area7"),
-            area8=Placeholder(name="area8"),
+            optim=self.optim,
+            forward=self.forward,
         )

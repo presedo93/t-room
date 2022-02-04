@@ -1,26 +1,25 @@
 from rich import box
+from rich.text import Text
 from rich.align import Align
 from rich.panel import Panel
 from rich.table import Table
-from rich.pretty import Pretty
-from rich.layout import Layout
-from rich.padding import Padding
 from rich.console import RenderableType
 
 from textual.widget import Widget
 from textual.reactive import Reactive
 
 from typing import Dict
-from tools.utils import open_conf
 
 
 class Params(Widget):
     has_focus: Reactive[bool] = Reactive(False)
     mouse_over: Reactive[bool] = Reactive(False)
-    conf: Reactive[Dict] = Reactive({})
+    params: Reactive[Dict] = Reactive({})
 
-    def on_mount(self) -> None:
-        self.conf = open_conf("conf/conf.json")["routine"]
+    def __init__(self, field: str, params: Dict | None = None) -> None:
+        super().__init__()
+        self.field = field
+        self.params = params
 
     async def on_focus(self) -> None:
         self.has_focus = True
@@ -34,59 +33,31 @@ class Params(Widget):
     async def on_leave(self) -> None:
         self.mouse_over = False
 
-    # def update_params(self, message) -> None:
-    #     self.conf["train"]["batch_size"] = message.cmd
-    #     self.refresh()
-
     def render(self) -> RenderableType:
-        # train_table = self.create_table(self.conf["train"], "Train")
-        # test_table = self.create_table(self.conf["test"], "Test")
-        # pred_table = self.create_table(self.conf["predict"], "Predict")
-
-        # layout = Layout()
-        # layout.split_column(
-        #     Layout(name="upper"), Layout(name="middle"), Layout(name="bottom")
-        # )
-
-        # layout["upper"].update(Padding(Align.center(train_table), 2))
-        # layout["middle"].update(Padding(Align.center(test_table), 4))
-        # layout["bottom"].update(Padding(Align.center(pred_table), 4))
+        if self.params is not None:
+            rend = self.create_table(self.params)
+        else:
+            rend = Align.center(Text(f"No {self.field} params", style="green" if self.mouse_over else "blue"), vertical="middle")
 
         return Panel(
-            Pretty(self.conf),
+            rend,
             border_style="green" if self.mouse_over else "blue",
             box=box.HEAVY if self.has_focus else box.ROUNDED,
-            title="parameters",
+            title=self.field,
         )
 
-    def create_table(self, conf: Dict, stage: str) -> Table:
+    def create_table(self, params: Dict) -> Table:
         table = Table(
-            title=f"{stage} Parameters",
             show_header=False,
-            box=box.ROUNDED,
-            width=100,
+            box=None,
             border_style="green" if self.mouse_over else "blue",
             show_lines=True,
             title_style="bold",
         )
-        table.add_column(justify="center")
-        table.add_column(justify="center")
-        table.add_column(justify="center")
-        table.add_column(justify="center")
 
-        params = [(k, v) for k, v in conf.items()]
-        for i, _ in enumerate(params):
-            if i % 2 != 0:
-                continue
-            try:
-                param1, val1 = str(params[i][0]), str(params[i][1])
-            except IndexError:
-                param1 = val1 = "-" * 10
-
-            try:
-                param2, val2 = str(params[i + 1][0]), str(params[i + 1][1])
-            except IndexError:
-                param2 = val2 = "-" * 10
-            table.add_row(param1, val1, param2, val2)
+        table.add_column(justify="center")
+        for k, v in params.items():
+            table.add_row(f"{k}", style="green" if self.mouse_over else "blue")
+            table.add_row(f"{v}")
 
         return table

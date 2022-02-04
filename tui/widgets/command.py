@@ -48,7 +48,7 @@ class Command(Widget):
 
     def render(self) -> Panel:
         return Panel(
-            f"[b yellow]>>[/] {self.text}",
+            f"[b yellow]>>>[/] {self.text}",
             box=box.HEAVY if self.has_focus else box.ROUNDED,
             border_style="green" if self.mouse_over else "blue",
         )

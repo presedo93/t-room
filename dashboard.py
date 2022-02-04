@@ -1,13 +1,10 @@
-import asyncio
-
 from textual.app import App
 from textual.reactive import Reactive
 
 from tui.grid import DashGrid
+from tui.messages import InputCommand
 from tui.widgets.header import Header
 from tui.widgets.command import Command
-
-from tui.messages import InputCommand
 
 
 class Dashboard(App):
@@ -31,8 +28,6 @@ class Dashboard(App):
             await self.grid.configs.post_message(InputCommand(self, cmd=msg.cmd, val=msg.val))
 
     async def on_mount(self) -> None:
-        """Build layout here."""
-        # Main view
         self.grid = DashGrid()
         await self.view.dock(Header(), edge="top", size=3)
         await self.view.dock(Command(), edge="bottom", size=3)
