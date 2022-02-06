@@ -14,3 +14,6 @@ venv/
 *.log
 *.csv
 *.html
+
+# Avoid strategies of the user to be public
+strategies/*
