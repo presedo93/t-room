@@ -6,6 +6,8 @@ from tui.messages import InputCommand
 from tui.widgets.header import Header
 from tui.widgets.command import Command
 
+from tools.utils import check_folders
+
 
 class Dashboard(App):
     show_runner: Reactive[bool] = Reactive(False)
@@ -28,6 +30,8 @@ class Dashboard(App):
             await self.grid.configs.post_message(InputCommand(self, cmd=msg.cmd))
 
     async def on_mount(self) -> None:
+        check_folders()
+
         self.grid = DashGrid()
         await self.view.dock(Header(), edge="top", size=3)
         await self.view.dock(Command(), edge="bottom", size=3)

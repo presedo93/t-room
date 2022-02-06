@@ -29,3 +29,9 @@ def time_period(days: int = 0, offset: int = 0) -> Tuple[str, str]:
     end = dt.today() - timedelta(days=offset)
     start = end - timedelta(days=days)
     return start.strftime("%Y-%b-%d %H:%M:%S"), end.strftime("%Y-%b-%d %H:%M:%S")
+
+
+def check_folders() -> None:
+    """Check if subfolders already exist."""
+    if os.path.exists("strategies") is False:
+        os.makedirs("strategies", exist_ok=True)
