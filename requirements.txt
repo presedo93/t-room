@@ -10,6 +10,9 @@ alpha_vantage
 # Backtesting
 backtesting
 
+# Technical Analysis
+ta-lib
+
 # Data bases
 motor
 

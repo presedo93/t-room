@@ -2,7 +2,9 @@ import os
 import json
 import argparse
 
-from typing import Dict
+from typing import Dict, Tuple
+from datetime import timedelta
+from datetime import datetime as dt
 
 
 def str2bool(v: str) -> bool:
@@ -21,3 +23,9 @@ def open_conf(conf_path: str) -> Dict:
         conf = json.load(f)
 
     return conf
+
+
+def time_period(days: int = 0, offset: int = 0) -> Tuple[str, str]:
+    end = dt.today() - timedelta(days=offset)
+    start = end - timedelta(days=days)
+    return start.strftime("%Y-%b-%d %H:%M:%S"), end.strftime("%Y-%b-%d %H:%M:%S")

@@ -1,56 +1,44 @@
+import os
 import logging
 import numpy as np
 import pandas as pd
 
-from datetime import datetime
-from binance import Client
-
+from binance import AsyncClient
 from datetime import datetime as dt
-from dateutil.relativedelta import relativedelta
+from tools.utils import time_period
 
-from typing import Tuple
+COLS = ["date", "open", "high", "low", "close", "volume"]
+DISCARDED = ["Close_time", "Quote_av", "Trades", "Tb_base_av", "Tb_quote_av", "Ignore"]
 
-COLS = ["Date", "Open", "High", "Low", "Close", "Volume"]
-DISCARD = ["Close_time", "Quote_av", "Trades", "Tb_base_av", "Tb_quote_av", "Ignore"]
-
-
-def time_period(
-    days: int = 0, secs: int = 0, days_off: int = 0, secs_off: int = 0
-) -> Tuple[str, str]:
-    start = end = dt.today() - relativedelta(days=days_off, seconds=secs_off)
-    start -= relativedelta(days=days, seconds=secs)
-    return start.strftime("%d %b %Y %H:%M:%S"), end.strftime("%d %b %Y %H:%M:%S")
-
-
-def binance_data(
-    bclient: Client, symbol: str, interval: str, period: int, save: bool = False
+async def binance_data(
+    symbol: str, interval: str, period: int, save: bool = False
 ) -> pd.DataFrame:
     start, end = time_period(days=period)
+    bn = AsyncClient(api_key=os.getenv("BINANCE_API"), api_secret=os.getenv("BINANCE_SECRET"))
 
-    klines = bclient.get_historical_klines(symbol, interval, start, end)
-    data = pd.DataFrame(klines, columns=COLS + DISCARD, dtype=np.float64).dropna()
-    data.drop(columns=DISCARD, inplace=True)
+    lines = await bn.get_historical_klines(symbol, interval, start, end)
+    await bn.close_connection()
 
-    data["Date"] = data["Date"].apply(lambda x: datetime.fromtimestamp(x / 1000))
-    data.set_index("Date", inplace=True)
+    data = pd.DataFrame(lines, columns=COLS + DISCARDED, dtype=np.float64).dropna()
+    data.drop(columns=DISCARDED, inplace=True)
+
+    data["date"] = data["date"].apply(lambda x: dt.fromtimestamp(x / 1000))
+    data.set_index("date", inplace=True)
     data.index = pd.to_datetime(data.index, format="%Y-%m-%d %H:%M:%S")
-
-    logging.info(f"Fetched {symbol} ({interval}) from {start} to {end}")
 
     if save:
         data.to_csv(f"{symbol}.csv")
 
+    logging.info(f"Fetched {symbol} ({interval}) from {start} to {end}")
     return data
 
 
 if __name__ == "__main__":
-    import os
-
+    import asyncio
     logging.basicConfig(
         filename="binance.log", format="%(levelname)s - %(message)s", level=logging.INFO
     )
-
-    client = Client(
-        api_key=os.getenv("BINANCE_API"), api_secret=os.getenv("BINANCE_SECRET")
-    )
-    binance_data(client, "BTCUSDT", "1d", 20, save=True)
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    results = loop.run_until_complete(binance_data("BTCUSDT", "1d", 20))
+    loop.close()
