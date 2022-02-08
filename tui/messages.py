@@ -16,3 +16,8 @@ class ConfigCommand(Message, bubble=True):
     def __init__(self, sender: MessagePump, *, cmd: List = None) -> None:
         super().__init__(sender)
         self.cmd = cmd
+
+
+class RunCommand(Message, bubble=True):
+    def __init__(self, sender: MessagePump, *, params: List = None) -> None:
+        super().__init__(sender)

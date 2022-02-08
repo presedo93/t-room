@@ -28,6 +28,7 @@ class Dashboard(App):
     async def handle_input_command(self, msg: InputCommand) -> None:
         if msg.action == "config":
             await self.grid.configs.post_message(InputCommand(self, cmd=msg.cmd))
+        # elif msg.action == "start":
 
     async def on_mount(self) -> None:
         check_folders()

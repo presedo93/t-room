@@ -8,10 +8,13 @@ from alpha_vantage.async_support.timeseries import TimeSeries
 
 COLS = ["open", "high", "low", "close", "volume"]
 
+
 async def alpha_vantage_data(
     symbol: str, interval: str, period: int, save: bool = False
 ) -> pd.DataFrame:
-    ts = TimeSeries(key=os.getenv("ALPHA_VANTAGE_API"), output_format="pandas", indexing_type="date")
+    ts = TimeSeries(
+        key=os.getenv("ALPHA_VANTAGE_API"), output_format="pandas", indexing_type="date"
+    )
     match interval:
         case "1m" | "5m" | "15m" | "30m" | "60m":
             data, _ = await ts.get_intraday(symbol, f"{interval}in", outputsize="full")
@@ -39,6 +42,7 @@ async def alpha_vantage_data(
 
 if __name__ == "__main__":
     import asyncio
+
     logging.basicConfig(
         filename="alpha.log", format="%(levelname)s - %(message)s", level=logging.INFO
     )

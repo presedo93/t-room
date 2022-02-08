@@ -71,9 +71,9 @@ class Configs(Widget):
                 self.price_limit = float(val)
             case ["str_ticker", val]:
                 self.str_ticker = str(val)
-            case ["interval", *val]:
+            case ["intervals", *val]:
                 self.interval = val
-            case ["period", *val]:
+            case ["periods", *val]:
                 print(val)
                 self.period = val
         self.refresh()

@@ -10,11 +10,14 @@ from tools.utils import time_period
 COLS = ["date", "open", "high", "low", "close", "volume"]
 DISCARDED = ["Close_time", "Quote_av", "Trades", "Tb_base_av", "Tb_quote_av", "Ignore"]
 
+
 async def binance_data(
     symbol: str, interval: str, period: int, save: bool = False
 ) -> pd.DataFrame:
     start, end = time_period(days=period)
-    bn = AsyncClient(api_key=os.getenv("BINANCE_API"), api_secret=os.getenv("BINANCE_SECRET"))
+    bn = AsyncClient(
+        api_key=os.getenv("BINANCE_API"), api_secret=os.getenv("BINANCE_SECRET")
+    )
 
     lines = await bn.get_historical_klines(symbol, interval, start, end)
     await bn.close_connection()
@@ -35,6 +38,7 @@ async def binance_data(
 
 if __name__ == "__main__":
     import asyncio
+
     logging.basicConfig(
         filename="binance.log", format="%(levelname)s - %(message)s", level=logging.INFO
     )
