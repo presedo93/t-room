@@ -1,10 +1,13 @@
 import os
 import json
+import asyncio
 import argparse
 
-from typing import Dict, Tuple
 from datetime import timedelta
 from datetime import datetime as dt
+
+from concurrent.futures import ThreadPoolExecutor
+from typing import Any, Callable, Dict, List, Tuple
 
 
 def str2bool(v: str) -> bool:
@@ -35,3 +38,14 @@ def check_folders() -> None:
     """Check if subfolders already exist."""
     if os.path.exists("strategies") is False:
         os.makedirs("strategies", exist_ok=True)
+
+
+async def run_func_async(
+    func: Callable, func_args: List[Any], executor: ThreadPoolExecutor
+):
+    if asyncio.iscoroutinefunction(func):
+        return await func(*func_args)
+    else:
+        return await asyncio.get_event_loop().run_in_executor(
+            func=lambda: func(*func_args), executor=executor
+        )

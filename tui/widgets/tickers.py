@@ -4,11 +4,11 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.console import RenderableType
 
-from textual import events
 from textual.widget import Widget
 from textual.reactive import Reactive
 
 from typing import List
+from tui.messages import InputCommand
 
 
 class Tickers(Widget):
@@ -17,8 +17,8 @@ class Tickers(Widget):
     color: Reactive[str] = Reactive("blue")
 
     def __init__(self, tickers: List | None = None) -> None:
-        self.tickers = tickers
         super().__init__(name=None)
+        self.tickers = tickers
 
     async def on_focus(self) -> None:
         self.has_focus = True
@@ -34,13 +34,12 @@ class Tickers(Widget):
         self.mouse_over = False
         self.color = "blue"
 
-    def on_key(self, event: events.Keys) -> None:
-        if event.key == "up":
-            self.tickers.pop(0)
+    async def handle_input_command(self, msg: InputCommand) -> None:
+        self.tickers = msg.cmd
         self.refresh()
 
     def render(self) -> RenderableType:
-        if self.tickers is not None:
+        if self.tickers:
             rend = Table(box=None, expand=True, padding=(1, 0, 0, 0), show_header=False)
 
             rend.add_column(justify="center", no_wrap=True)

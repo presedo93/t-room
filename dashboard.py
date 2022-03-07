@@ -2,11 +2,12 @@ from textual.app import App
 from textual.reactive import Reactive
 
 from tui.grid import DashGrid
-from tui.messages import InputCommand
+from tasks.runner import Runner
 from tui.widgets.header import Header
 from tui.widgets.command import Command
 
 from tools.utils import check_folders
+from tui.messages import InputCommand, RunCommand, ProgressCommand
 
 
 class Dashboard(App):
@@ -14,29 +15,32 @@ class Dashboard(App):
 
     async def on_load(self) -> None:
         """Bind keys here."""
-        await self.bind("ctrl+b", "toggle_runner", "Toggle Runner")
         await self.bind("ctrl+c", "quit", "Quit")
-
-    def watch_show_runner(self, show_runner: bool) -> None:
-        """Called when show_runner changes."""
-        self.runner.animate("visible", True if show_runner else False)
-
-    def action_toggle_runner(self) -> None:
-        """Called when user hits 'b' key."""
-        self.show_runner = not self.show_runner
 
     async def handle_input_command(self, msg: InputCommand) -> None:
         if msg.action == "config":
             await self.grid.configs.post_message(InputCommand(self, cmd=msg.cmd))
-        # elif msg.action == "start":
+        if msg.action == "tickers":
+            await self.grid.tickers.post_message(InputCommand(self, cmd=msg.cmd))
+        elif msg.action == "start":
+            await self.runner.post_message(
+                RunCommand(self, task="back", params=self.grid.conf)
+            )
+
+    async def handle_progress_command(self, msg: ProgressCommand) -> None:
+        if msg.task == "update":
+            await self.grid.status.post_message(
+                ProgressCommand(self, status=msg.status)
+            )
 
     async def on_mount(self) -> None:
         check_folders()
-
         self.grid = DashGrid()
+        self.runner = Runner()
         await self.view.dock(Header(), edge="top", size=3)
         await self.view.dock(Command(), edge="bottom", size=3)
         await self.view.dock(self.grid, edge="top")
+        await self.view.dock(self.runner)
 
 
-Dashboard.run()
+Dashboard.run(log="textual.log")

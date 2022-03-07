@@ -1,6 +1,6 @@
 from textual.message import Message
 from textual.message_pump import MessagePump
-from typing import List
+from typing import Dict, List
 
 
 class InputCommand(Message, bubble=True):
@@ -12,12 +12,25 @@ class InputCommand(Message, bubble=True):
         self.cmd = cmd
 
 
-class ConfigCommand(Message, bubble=True):
-    def __init__(self, sender: MessagePump, *, cmd: List = None) -> None:
+class ParamsCommand(Message, bubble=True):
+    def __init__(self, sender: MessagePump, *, params: Dict = None) -> None:
         super().__init__(sender)
-        self.cmd = cmd
+        self.params = params
 
 
 class RunCommand(Message, bubble=True):
-    def __init__(self, sender: MessagePump, *, params: List = None) -> None:
+    def __init__(
+        self, sender: MessagePump, *, task: str = None, params: Dict = None
+    ) -> None:
         super().__init__(sender)
+        self.task = task
+        self.params = params
+
+
+class ProgressCommand(Message, bubble=True):
+    def __init__(
+        self, sender: MessagePump, *, task: str = None, status: Dict = None
+    ) -> None:
+        super().__init__(sender)
+        self.task = task
+        self.status = status

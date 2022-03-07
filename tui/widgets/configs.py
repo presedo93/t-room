@@ -6,7 +6,7 @@ from rich.pretty import Pretty
 from rich.console import Group
 from rich.console import RenderableType
 
-from typing import Dict, List
+from typing import Dict
 from textual.widget import Widget
 from textual.reactive import Reactive
 
@@ -19,29 +19,9 @@ class Configs(Widget):
     mouse_over: Reactive[bool] = Reactive(False)
     color: Reactive[str] = Reactive("blue")
 
-    workers: Reactive[int] = Reactive(0)
-    store: Reactive[bool] = Reactive(False)
-    cash: Reactive[float] = Reactive(0.0)
-    commission: Reactive[float] = Reactive(0.0)
-    price_limit: Reactive[float] = Reactive(0.0)
-    str_ticker: Reactive[str] = Reactive("")
-
-    interval: Reactive[List] = Reactive([])
-    period: Reactive[List] = Reactive([])
-
     def __init__(self, conf: Dict) -> None:
         self.conf = conf
         super().__init__()
-
-    def on_mount(self) -> None:
-        self.cash = self.conf["cash"]
-        self.commission = self.conf["commission"]
-
-        self.price_limit = self.conf["price_limit"]
-        self.str_ticker = self.conf["str_ticker"]
-
-        self.interval = self.conf["interval"]
-        self.period = self.conf["period"]
 
     async def on_focus(self) -> None:
         self.has_focus = True
@@ -60,22 +40,22 @@ class Configs(Widget):
     async def handle_input_command(self, msg: InputCommand) -> None:
         match msg.cmd:
             case ["workers", val]:
-                self.workers = int(val)
+                self.conf["workers"] = int(val)
             case ["store", val]:
-                self.store = str2bool(val)
+                self.conf["store"] = str2bool(val)
             case ["cash", val]:
-                self.cash = float(val)
+                self.conf["cash"] = float(val)
             case ["commission", val]:
-                self.commission = float(val)
+                self.conf["commission"] = float(val)
             case ["price_limit", val]:
-                self.price_limit = float(val)
+                self.conf["price_limit"] = float(val)
             case ["str_ticker", val]:
-                self.str_ticker = str(val)
+                self.conf["str_ticker"] = str(val)
             case ["intervals", *val]:
-                self.interval = val
+                self.conf["intervals"] = val
             case ["periods", *val]:
                 print(val)
-                self.period = val
+                self.conf["periods"] = val
         self.refresh()
 
     def render(self) -> RenderableType:
@@ -93,15 +73,23 @@ class Configs(Widget):
         table1.add_column(justify="center", style=self.color)
         table1.add_column(justify="center", style="white")
 
-        table1.add_row("Workers:", f"{self.workers}", "Store in DB:", f"{self.store}")
         table1.add_row(
-            "Cash:", f"{self.cash}", "Commission:", f"{self.commission*100}%"
+            "Workers:",
+            f"{self.conf['workers']}",
+            "Store in DB:",
+            f"{self.conf['store']}",
+        )
+        table1.add_row(
+            "Cash:",
+            f"{self.conf['cash']}",
+            "Commission:",
+            f"{self.conf['commission'] * 100}%",
         )
         table1.add_row(
             "Max. Price:",
-            f"{self.price_limit}",
+            f"{self.conf['price_limit']}",
             "Name in ticker:",
-            f"{self.str_ticker}",
+            f"{self.conf['str_ticker']}",
         )
 
         table2 = Table(
@@ -116,8 +104,8 @@ class Configs(Widget):
         table2.add_column(justify="center", style=self.color)
         table2.add_column(justify="center", style="white")
 
-        table2.add_row("Intervals:", Pretty(self.interval))
-        table2.add_row("Periods:", Pretty(self.period))
+        table2.add_row("Intervals:", Pretty(self.conf["intervals"]))
+        table2.add_row("periodss:", Pretty(self.conf["periods"]))
 
         group = Group(table1, table2)
 

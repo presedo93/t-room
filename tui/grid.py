@@ -35,22 +35,21 @@ class DashGrid(GridView):
             tickers="left-start|leftcent-end,midbot",
         )
 
-        conf = open_conf("conf/conf.json")
-
-        self.tickers = Tickers()
+        self.conf = open_conf("conf/conf.json")
+        self.tickers = Tickers(self.conf["tickers"])
         self.status = Status()
-        self.configs = Configs(conf)
+        self.configs = Configs(self.conf)
         self.info = Info()
-        self.optim = Params("optimize", conf["optimize"])
-        self.forward = Params("forward")
+        self.optim = Params("optimize", self.conf["optimize"])
+        self.forward = Params("forward", self.conf["forward"])
 
         self.grid.place(
             configs=self.configs,
             central=self.info,
             status=self.status,
             tickers=self.tickers,
-            market=Selector("markets", conf["brokers"]),
-            strategies=Selector("strategies", ["goldencross", "macd+rsi", "bollinger"]),
+            market=Selector("brokers", self.conf),
+            strategies=Selector("strategies", self.conf),
             optim=self.optim,
             forward=self.forward,
         )

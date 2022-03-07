@@ -34,7 +34,7 @@ class Params(Widget):
         self.mouse_over = False
 
     def render(self) -> RenderableType:
-        if self.params is not None:
+        if self.params:
             rend = self.create_table(self.params)
         else:
             rend = Align.center(

@@ -1,12 +1,14 @@
 {
+    "workers": 2,
+    "store": false,
     "market": "krypto",
-    "ticker": "ALL",
+    "tickers": [ ],
     "price_limit": 200,
     "str_ticker": "USDT",
-    "strategy": "goldencross",
+    "strategies": ["goldencross"],
     "brokers": ["Binance", "NASDAQ100", "S&P500"],
-    "interval": ["5m", "15m", "1h", "1d"],
-    "period": ["30", "50", "100", "150"],
+    "intervals": ["5m", "15m", "1h", "1d"],
+    "periods": ["30", "50", "100", "150"],
     "commission": 0.00075,
     "cash": 10000,
     "optimize":
@@ -15,5 +17,6 @@
         "slow_n": { "min": 120, "max": 180, "step": 10 },
         "constraint": "lambda p: p.fast_n < p.slow_n",
         "maximize": "Equity Final [$]"
-    }
+    },
+    "forward": { }
 }

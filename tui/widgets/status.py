@@ -7,6 +7,8 @@ from rich.progress import Progress, BarColumn, TimeRemainingColumn
 from textual.widget import Widget
 from textual.reactive import Reactive
 
+from tui.messages import ProgressCommand
+
 
 class Status(Widget):
     has_focus: Reactive[bool] = Reactive(False)
@@ -41,8 +43,13 @@ class Status(Widget):
         self.mouse_over = False
         self.color = "blue"
 
-    # async def handle_grid_command(self, message: NewCommand) -> None:
-    # self.bar.update(self.backtest, advance=2)
+    async def handle_progress_command(self, msg: ProgressCommand) -> None:
+        if "back" in msg.status:
+            self.bar.update(self.backtest, advance=msg.status["back"])
+        elif "opt" in msg.status:
+            self.bar.update(self.optimize, advance=msg.status["opt"])
+        elif "wfa" in msg.status:
+            self.bar.update(self.forward, advance=msg.status["wfa"])
 
     def render(self) -> RenderableType:
         return Panel(
